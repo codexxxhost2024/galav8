@@ -7,7 +7,7 @@ export async function POST(request: Request) {
   const currentUser = await getCurrentUser();
 
   if (!currentUser) {
-    return NextResponse.error();
+    return new NextResponse("Unauthorized", { status: 401 });
   }
 
   const body = await request.json();
@@ -22,6 +22,10 @@ export async function POST(request: Request) {
     location,
     price,
   } = body;
+
+  if (isNaN(Number(price))) {
+    return new NextResponse("Invalid price", { status: 400 });
+  }
 
   const listing = await prisma.listing.create({
     data: {

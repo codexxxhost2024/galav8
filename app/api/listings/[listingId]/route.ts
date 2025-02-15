@@ -11,13 +11,13 @@ export async function DELETE(request: Request, params: IListingParams) {
   const currenUser = await getCurrentUser();
 
   if (!currenUser) {
-    return NextResponse.error();
+    return new NextResponse("Unauthorized", { status: 401 });
   }
 
   const { listingId } = params;
 
   if (!listingId || typeof listingId !== "string") {
-    throw new Error("Invalid ID");
+    return new NextResponse("Invalid ID", { status: 400 });
   }
 
   const listing = await prisma.listing.deleteMany({
